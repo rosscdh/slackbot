@@ -53,12 +53,12 @@ class MessageDispatcher(object):
                 responded = True
                 try:
                     func(Message(self._client, msg), *args)
-                except:
+                except Exception as e:
                     logger.exception(
                         'failed to handle message %s with plugin "%s"',
                         msg['text'], func.__name__)
-                    reply = u'[{}] I had a problem handling "{}"\n'.format(
-                        func.__name__, msg['text'])
+                    reply = u'[{}] I had a problem handling "{}:{}"\n'.format(
+                        func.__name__, msg['text'], e)
                     tb = u'```\n{}\n```'.format(traceback.format_exc())
                     if self._errors_to:
                         self._client.rtm_send_message(msg['channel'], reply)
@@ -79,8 +79,8 @@ class MessageDispatcher(object):
 
         botname = self._client.login_data['self']['name']
         try:
-            msguser = self._client.users.get(msg['user'])
-            username = msguser['name']
+            msg['user'] = self._client.users.get(msg['user'])
+            username = msg['user']['name']
         except (KeyError, TypeError):
             if 'username' in msg:
                 username = msg['username']
