@@ -185,7 +185,7 @@ class Message(object):
 
     def _get_user_id(self):
         if 'user' in self._body:
-            return self._body['user']
+            return self._body['user']['name']
 
         return self._client.find_user_by_name(self._body['username'])
 
