@@ -171,7 +171,11 @@ def unicode_compact(func):
     @wraps(func)
     def wrapped(self, text, *a, **kw):
         if not isinstance(text, six.text_type):
-            text = text.decode('utf-8')
+            LAMBDA = lambda:0
+            if isinstance(text, type(LAMBDA)) and text.__name__ == LAMBDA.__name__:
+                text = text()
+            else:
+                text = text.decode('utf-8')
         return func(self, text, *a, **kw)
 
     return wrapped
